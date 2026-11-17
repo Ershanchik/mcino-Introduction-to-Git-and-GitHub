@@ -1,0 +1,7 @@
+$ git branch -avv
+  bug-fix-revert                d95ee33 [origin/bug-fix-revert] Fix typo in additional authors comment
+  bug-fix-typo                  777d178 [origin/bug-fix-typo] Fix simple interest formula in README example
+* main                          6a87e79 [origin/main] Merge branch 'bug-fix-typo'
+  remotes/origin/bug-fix-revert d95ee33 Fix typo in additional authors comment
+  remotes/origin/bug-fix-typo   777d178 Fix simple interest formula in README example
+  remotes/origin/main           6a87e79 Merge branch 'bug-fix-typo'
