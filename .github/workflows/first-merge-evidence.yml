@@ -1,0 +1,49 @@
+name: Record first Git branch merge for final project
+
+on:
+  push:
+    branches: [bug-fix-typo]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  first-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Perform actual branch merge and save terminal evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -B bug-fix-typo origin/bug-fix-typo
+          {
+            echo '$ git checkout main'
+            git checkout -B main origin/main
+            echo '$ git merge --no-ff bug-fix-typo'
+            git merge --no-ff bug-fix-typo -m "Merge branch 'bug-fix-typo'"
+          } 2>&1 | tee first-merge-output.txt
+          grep -q '1 file changed' first-merge-output.txt
+          git push origin main
+          git checkout -B bug-fix-revert origin/bug-fix-revert
+          git checkout main
+          {
+            echo '$ git branch -avv'
+            git branch -avv
+          } 2>&1 | tee github-branches
+          git add first-merge-output.txt github-branches
+          git commit -m "Record authentic merge and branch output [skip ci]"
+          git push origin main
+      - name: Upload captured terminal output
+        uses: actions/upload-artifact@v4
+        with:
+          name: first-merge-evidence
+          path: |
+            first-merge-output.txt
+            github-branches
